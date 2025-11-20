@@ -1,0 +1,10 @@
+[Unit]
+Description=Python Log Monitoring System
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/log-monitoring/monitor/monitor.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
