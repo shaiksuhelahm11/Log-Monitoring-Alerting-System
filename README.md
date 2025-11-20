@@ -3,23 +3,24 @@
 A Python-based monitoring tool that scans application logs, detects error patterns, and generates alerts. 
 Built for DevOps-style troubleshooting and automated detection of failures.
 
-##  Features
-- Scans log files for ERROR, FAIL, WARNING, CRITICAL patterns  
-- Regex-based pattern matching  
-- Console-based alerts (extendable to Slack/email)  
-- Lightweight and suitable for cron scheduling  
-- Simple modular structure  
+## Features
+- Real-time log monitoring (tail-like behavior)
+- Regex-based pattern detection
+- Threshold + time-window alert rules
+- Console, Slack, and Email alert options
+- YAML-based configuration (no code changes needed)
+- Docker + systemd support
 
-## Folder Structure
-log-monitor/
-│── logs/
-│   └── app.log  
-│── monitor.py  
-│── alert.py  
-│── requirements.txt
+# How It Works
+- monitor.py tails the configured log file.
+- Each new log line is checked against rules in config.yaml.
+- If a pattern appears X times within Y seconds, an alert is triggered.
+- Alerts are printed to the console (default) or sent to Slack/Email.
 
-## Future Enhancements
-- Slack / Email alerts  
-- Integration with CloudWatch logs  
-- Log rotation handling  
-- Export report to database  
+### Setup
+- pip install -r requirements.txt
+- python monitor.py
+
+### Run with Docker (Optional)
+- docker build -t log-monitor .
+- docker run -v /var/log:/logs log-monitor
