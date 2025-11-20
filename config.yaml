@@ -1,0 +1,16 @@
+log_file: "/var/log/syslog"
+
+rules:
+  - name: "Error spike"
+    pattern: "ERROR"
+    threshold: 5
+    time_window_sec: 60
+
+  - name: "Login failure"
+    pattern: "Failed password"
+    threshold: 2
+    time_window_sec: 30
+
+alerting:
+  email: ""           
+  slack_webhook: ""   
