@@ -1,34 +1,32 @@
-import re
-from datetime import datetime
-from alert import send_alert
+import yaml
+import time
+import os
+from rule_engine import RuleEngine
+from alert import AlertManager
 
-LOG_FILE = "logs/app.log"
+def tail(path):
+    with open(path, "r") as file:
+        file.seek(0, os.SEEK_END)
+        while True:
+            line = file.readline()
+            if line:
+                yield line.strip()
+            time.sleep(0.2)
 
-ERROR_PATTERNS = [
-    r"ERROR",
-    r"FAIL",
-    r"EXCEPTION",
-    r"CRITICAL",
-    r"WARNING"
-]
+def main():
+    with open("config.yaml") as f:
+        config = yaml.safe_load(f)
 
-def scan_logs():
-    with open(LOG_FILE, "r") as file:
-        lines = file.readlines()
+    engine = RuleEngine(config["rules"])
+    alerts = AlertManager(config)
 
-    error_count = 0
-    error_lines = []
+    print("Log Monitoring Started...")
 
-    for line in lines:
-        for pattern in ERROR_PATTERNS:
-            if re.search(pattern, line, re.IGNORECASE):
-                error_count += 1
-                error_lines.append(line.strip())
+    for line in tail(config["log_file"]):
+        rules_triggered = engine.evaluate(line)
 
-    print(f"[{datetime.now()}] Errors detected: {error_count}")
-
-    if error_count > 0:
-        send_alert(error_count, error_lines)
+        for rule in rules_triggered:
+            alerts.notify(rule, line)
 
 if __name__ == "__main__":
-    scan_logs()
+    main()
