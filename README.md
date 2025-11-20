@@ -16,7 +16,6 @@ log-monitor/
 │   └── app.log  
 │── monitor.py  
 │── alert.py  
-│── README.md  
 │── requirements.txt
 
 ## Future Enhancements
